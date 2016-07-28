@@ -1,6 +1,3 @@
-__SINE annotation__
--------------
-
 ## SINE Background
 SINEs are transcribed by RNA polymerase III, and are derived from one of three classes of Pol III–transcribed molecules (tRNA, 7SL, 5s rRNA).
 While animal SINEs from all three classes are known, plant SINEs are exclusively derived from tRNA. 
