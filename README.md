@@ -5,9 +5,25 @@ scripts and intermediate files used to annotate TEs in Jiao et al. 2016
 
 __LTR Retrotransposons__
 
-Scripts in ```nested_ltr```
+scripts in ```ltr```
 
-This follows the structure of nested_ltr, here a submodule.
+Software needed:
+
+- ncbi blast+
+
+- [genometools](http://www.genometools.org), ([download](http://www.genometools.org/pub/genometools-1.5.7.tar.gz)), need to pass `64bit=yes with-hmer=yes threads=yes` to make, make install for ltrdigest hmm searches in parallel. I also had to pass `cairo=no` as well because I didn't have the right cairo libraries and it wouldn't compile otherwise
+
+- [silix](http://lbbe.univ-lyon1.fr/Download,3009.html?lang=en), ([download](ftp://pbil.univ-lyon1.fr/pub/logiciel/silix//silix-1.2.10.tar.gz)), need to compile with ```--enable-mpi``` and ```--enable-verbose```
+
+- hmmer (genometools with download and compile hmmer2 if you run ```make with-hmmer=yes```)
+
+Files needed, can be downloaded by `get_tRNA_hmm_dbs.sh` in ```ltr``` directory:
+
+- download [hmms](http://gydb.org/gydbModules/collection/collection/db/GyDB_collection.zip) of TE protein coding domains from gydb in directory `gydb_hmms`, will be used to identify protein coding domains of TE models
+	
+	-need to fix a hmm with name ty1/copia because this is used as a filename by ltrdigest. to remove the forward slash:  ```sed -i "s#ty1/copia#ty1-copia#g" gydb_hmms/GyDB_collection/profiles/AP_ty1copia.hmm```
+
+- download [tRNAs](http://gtrnadb.ucsc.edu/download/tRNAs/eukaryotic-tRNAs.fa.gz) of all eukaryotes
 
 __SINEs__
 
@@ -34,7 +50,7 @@ Scripts in ```tir/```
 
 Software needed:
 
-- [MiteHunter](http://target.iplantcollaborative.org/mite_hunter.html), [download](http://target.iplantcollaborative.org/mite_hunter/MITE%20Hunter-11-2011.zip)
+- [detectMITE](https://www.nature.com/articles/srep19688), [download](https://sourceforge.net/projects/detectmite/)
 
 - [mTEA](https://github.com/stajichlab/mTEA), genometools (see above, already installed for ltr annotation) 
 
