@@ -1,5 +1,5 @@
 # maize_v4_TE_annotation
-scripts and intermediate files used to annotate TEs in Jiao et al. 2016
+scripts and intermediate files used to annotate TEs in [Jiao et al. 2016](http://biorxiv.org/content/early/2017/04/20/079004)
 
 ----------------
 
