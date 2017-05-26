@@ -50,7 +50,7 @@ Scripts in ```tir/```
 
 Software needed:
 
-- [MiteHunter](http://target.iplantcollaborative.org/mite_hunter.html), [download](http://target.iplantcollaborative.org/mite_hunter/MITE%20Hunter-11-2011.zip)
+- [detectMITE](https://www.nature.com/articles/srep19688), [download](https://sourceforge.net/projects/detectmite/)
 
 - [mTEA](https://github.com/stajichlab/mTEA), genometools (see above, already installed for ltr annotation) 
 
