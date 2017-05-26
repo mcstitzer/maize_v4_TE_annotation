@@ -5,6 +5,8 @@ scripts and intermediate files used to annotate TEs in Jiao et al. 2016
 
 __LTR Retrotransposons__
 
+scripts in ```ltr```
+
 Software needed:
 
 - ncbi blast+
