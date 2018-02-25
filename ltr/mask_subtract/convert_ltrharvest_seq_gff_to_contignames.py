@@ -17,7 +17,7 @@ for line in gff:
 	fields=line.strip().split()
 	if line.startswith('##sequence-region'):
 		seq.append(line.split()[1])
-	elif line.startswith('#') and re.search('#\d', line) is not None:
+	elif line.startswith('#scaffold'):
 #	elif line.startswith('#B73'):   ### this is not general!
 		contig.append(line.strip().split()[0][1:])
 	elif len(fields)==9:

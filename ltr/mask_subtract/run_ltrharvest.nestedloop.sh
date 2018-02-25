@@ -1,37 +1,44 @@
 #!/bin/bash -login
-#SBATCH -D /home/mstitzer/projects/agpv4_te_annotation/ncbi_pseudomolecule/ltr/mask_subtract
-#SBATCH -o /home/mstitzer/projects/agpv4_te_annotation/slurm-log/run_ltrharvest_nest-stdout-%j.txt
-#SBATCH -e /home/mstitzer/projects/agpv4_te_annotation/slurm-log/run_ltrharvest_nest-stderr-%j.txt
+#SBATCH -o run_ltrharvest_nest-stdout-%j.txt
+#SBATCH -e run_ltrharvest_nest-stderr-%j.txt
 #SBATCH -J ltr_nest_subtract
+#SBATCH --ntasks=16
+#SBATCH --nodes=1
+#SBATCH --mem=96G
+#SBATCH --mail-user=araje002@ucr.edu
+#SBATCH --mail-type=all
 set -e
 set -u
-
-
 
 ### update March 22, 2016
 ###   was not removing the copy of the TSD generated via transposition previously. added before and after lines to grep to get the first TSD and the LTR TE itself, which will be removed from the genomic sequence for the next round of search.
 
-export PATH=$PATH:/home/mstitzer/software/bin
+
 
 MEMLIM=96GB
 
-### genome tools path
-GENOMETOOLS=/home/mstitzer/software/genometools-1.5.7/bin/gt
+### load packages
+module load genometools/1.5.6
+module load bedtools/2.25.0
+module load samtools/1.6
+GENOMETOOLS=gt
 
 i=1
-GENOMEBASE=B73V4.pseudomolecule
-
+GENOMEBASE=NIOBT_r1.0
 
 ## the first one is different, becuase need to set up subtract directory structure.
 
 python convert_ltrharvest_seq_gff_to_contignames.py ../${GENOMEBASE}.ltrharvest.gff3 > ${GENOMEBASE}.ltrharvest.contignames.gff3
 grep --no-group-separator -B2 -A1 "LTR_retrotransposon	" ${GENOMEBASE}.ltrharvest.contignames.gff3 | sed -n '1~2p' > ${GENOMEBASE}.ltrharvest.contignames.tsd.ltrretrotransposon.gff3
 ## make an index for the r script and bedtools complement
-samtools faidx ../../${GENOMEBASE}.fasta
-bedtools complement -i ${GENOMEBASE}.ltrharvest.contignames.tsd.ltrretrotransposon.gff3 -g ../../${GENOMEBASE}.fasta.fai > ${GENOMEBASE}.ltrharvest.contignames.NOTltrretrotransposon.gff3
+samtools faidx ~/shared/Nobtusifolia/Genome_Files/${GENOMEBASE}.fasta
+awk -v OFS='\t' '{print $1, $2}' ~/shared/Nobtusifolia/Genome_Files/NIOBT_r1.0.fasta.fai > ~/shared/Nobtusifolia/Genome_Files/NIOBT_r1.0.fasta.2.fai
+bedtools complement -i ${GENOMEBASE}.ltrharvest.contignames.tsd.ltrretrotransposon.gff3 -g ~/shared/Nobtusifolia/Genome_Files/${GENOMEBASE}.fasta.2.fai > ${GENOMEBASE}.ltrharvest.contignames.NOTltrretrotransposon.gff3
 
 ## generate a subtracted fasta
-bedtools getfasta -fi ../../${GENOMEBASE}.fasta -bed ${GENOMEBASE}.ltrharvest.contignames.NOTltrretrotransposon.gff3 -fo ${GENOMEBASE}.subtract1.fa
+#fix the gff with 0 start and end lines
+grep -Pv "scaffold\d*\t0\t0" NIOBT_r1.0.ltrharvest.contignames.NOTltrretrotransposon.gff3 >NIOBT_r1.0.ltrharvest.contignames.NOTltrretrotransposon.2.gff3
+bedtools getfasta -fi ~/shared/Nobtusifolia/Genome_Files/${GENOMEBASE}.fasta -bed ${GENOMEBASE}.ltrharvest.contignames.NOTltrretrotransposon.2.gff3 -fo ${GENOMEBASE}.subtract1.fa
 
 ## concatenate the entries by chromosome
 python collapse_chromosomes.py ${GENOMEBASE}.subtract1.fa > ${GENOMEBASE}.temp
@@ -49,7 +56,7 @@ $GENOMETOOLS gff3 -sort subtract1/${GENOMEBASE}.subtract1.ltrharvest.gff3 > subt
 
 ### go until there are no more LTR TEs in this nested form 
 #while [ grep -c ltr_retrotransposon ${GENOMEBASE}.hardmask${i}.ltrharvest.gff3 -gt 0 ]
-while [ $i -le 100 ]
+while [ $i -le 5 ] #was 100
 do
 
 # name the file stem based on suffixator index
@@ -64,7 +71,7 @@ GENOMEFASTA=${GENOME}.fa
 NEWGENOMEFASTA=${NEWGENOME}.fa
 
 MEMLIM=96GB
-CPU=16
+CPU=$SLURM_NTASKS
 
 ###########################################################################
 ## Run suffixerator to make a suffix array of the genome for genometools ##
@@ -77,7 +84,8 @@ python convert_ltrharvest_seq_gff_to_contignames.py subtract${OLDINDEX}/${GENOME
 grep --no-group-separator -B2 -A1 "LTR_retrotransposon	" subtract${OLDINDEX}/${GENOME}.ltrharvest.contignames.gff3 | sed -n '1~2p' > subtract${OLDINDEX}/${GENOME}.ltrharvest.contignames.tsd.ltrretrotransposon.gff3
 ## make an index for the r script and bedtools complement
 samtools faidx ${GENOMEFASTA}
-
+awk -v OFS='\t' '{print $1, $2}' ${GENOMEFASTA}.fai > ${GENOMEFASTA}.1.fai
+mv ${GENOMEFASTA}.1.fai ${GENOMEFASTA}.fai 
 ### run the rscript: read in gff, read in RDS of genomelist, update genomelist with updatePos, write gff with changed positions
 
 
@@ -85,6 +93,8 @@ samtools faidx ${GENOMEFASTA}
 bedtools complement -i subtract${OLDINDEX}/${GENOME}.ltrharvest.contignames.tsd.ltrretrotransposon.gff3 -g ${GENOME}.fa.fai > subtract${OLDINDEX}/${GENOME}.ltrharvest.contignames.NOTltrretrotransposon.gff3
 
 ## generate a subtracted fasta
+grep -Pv "scaffold\d*\t0\t0" subtract${OLDINDEX}/${GENOME}.ltrharvest.contignames.NOTltrretrotransposon.gff3 > subtract${OLDINDEX}/${GENOME}.ltrharvest.contignames.NOTltrretrotransposon.1.gff3
+mv subtract${OLDINDEX}/${GENOME}.ltrharvest.contignames.NOTltrretrotransposon.1.gff3 subtract${OLDINDEX}/${GENOME}.ltrharvest.contignames.NOTltrretrotransposon.gff3
 bedtools getfasta -fi $GENOMEFASTA -bed subtract${OLDINDEX}/${GENOME}.ltrharvest.contignames.NOTltrretrotransposon.gff3 -fo $NEWGENOMEFASTA
 
 ## concatenate the entries by chromosome
