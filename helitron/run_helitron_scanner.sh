@@ -1,7 +1,7 @@
 #!/bin/bash -login
 
 GENOME=B73V4
-GENOMEFASTA=../B73V4.fa
+GENOMEFA=../B73V4.fa
 
 ### the base path to find all the lcv alignments
 HSDIR=/home/mstitzer/software/HelitronScanner_V1
@@ -64,9 +64,15 @@ python helitron_scanner_out_to_tabout.py ${GENOME}.HelitronScanner.draw.rc.hel.f
 ### think about whether this should be the entire element or the earlier classification based on the terminal 30bp of the helitron. 
 ### remember that the mtec helitrons have lots of N's in their internal regions, so this decision may have been due to data quality.
 
-$USEARCH -allpairs_global ${GENOME}.HelitronScanner.tabnames.fa -blast6out ${GENOME}.allvall.out -id 0.8 -query_cov 0.8 -target_cov 0.8 --threads=$CPU
+python get_last_30bp_fasta.py ${GENOME}.HelitronScanner.tabnames.fa > ${GENOME}.HelitronScanner.tabnames.terminal30bp.fa
 
-$SILIX ${GENOME}.HelitronScanner.tabnames.fa ${GENOME}.allvall.out -f DHH -i 0.8 -r 0.8 > ${GENOME}.8080.fnodes
+$VSEARCH -allpairs_global ${GENOME}.HelitronScanner.tabnames.terminal30bp.fa -blast6out ${GENOME}.terminal30bp.allvall.out -id 0.8 -query_cov 0.8 -target_cov 0.8 --threads=$CPU --minseqlength 1
+
+
+## command for clustering entire helitron length (too computationally expensive
+##$VSEARCH -allpairs_global ${GENOME}.HelitronScanner.tabnames.fa -blast6out ${GENOME}.allvall.out -id 0.8 -query_cov 0.8 -target_cov 0.8 --threads=$CPU 
+
+$SILIX ${GENOME}.HelitronScanner.tabnames.fa ${GENOME}.terminal30bp.allvall.out -f DHH -i 0.8 -r 0.8 > ${GENOME}.8080.fnodes
 
 
 
