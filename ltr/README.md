@@ -14,10 +14,14 @@ We use the 808080 rule ([Wicker et al., 2007](http://www.nature.com/nrg/journal/
 
 In the ```families``` directory:
 
-- `cluster_families_LTR.sh` runs the initial allvsall blast of 5' LTRs and then goes through silix clustering of sequences
+- `cluster_families_LTR.sh` runs the initial allvsall vsearch of 5' LTRs and then goes through silix clustering of sequences
 
+- `cluster_families_MTEC.sh` finds the closest match of each complete element to a [MTEC](http://maizetedb.org) consensus
 
-sed -i 's/=//g' B73.Mhap2.quiver.ltrdigest_5ltr.fas
+## Combining all outputs
 
+We assign superfamily and family names to each copy, return all sequences to the coordinates of the original genome, and output a gff3 of all LTR copies.
+
+- `Rscript combine_all_gffs_and_assign_fams.R` 
 
 	
