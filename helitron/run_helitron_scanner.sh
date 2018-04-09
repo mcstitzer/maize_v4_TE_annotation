@@ -30,7 +30,7 @@ java -Xmx${MEMGB}g -jar ${HSJAR} scanTail -lcv_filepath ${HSDIR}/TrainingSet/tai
 java -Xmx${MEMGB}g -jar ${HSJAR} pairends -head_score ${GENOME}.HelitronScanner.head -tail_score ${GENOME}.HelitronScanner.tail -output ${GENOME}.HelitronScanner.pairends
 
 ## draw the helitrons into fastas
-java -Xmx${MEMGB}g -jar ${HSJAR} draw -pscore ${GENOME}.HelitronScanner.pairends -g ../$GENOME -output ${GENOME}.HelitronScanner.draw -pure_helitron
+java -Xmx${MEMGB}g -jar ${HSJAR} draw -pscore ${GENOME}.HelitronScanner.pairends -g $GENOMEFA -output ${GENOME}.HelitronScanner.draw -pure_helitron
  
 ############################
 ##    REVERSE COMPLEMENT  ##
@@ -38,15 +38,15 @@ java -Xmx${MEMGB}g -jar ${HSJAR} draw -pscore ${GENOME}.HelitronScanner.pairends
 
 ##find helitron heads
 ### will load each chromosome into memory, without splitting into 1Mb batches (-buffer_size option ==0) 
-java -Xmx${MEMGB}g -jar ${HSJAR} scanHead -lcv_filepath ${HSDIR}/TrainingSet/head.lcvs -g ../$GENOME -buffer_size 0 --rc -output ${GENOME}.HelitronScanner.rc.head
+java -Xmx${MEMGB}g -jar ${HSJAR} scanHead -lcv_filepath ${HSDIR}/TrainingSet/head.lcvs -g $GENOMEFA -buffer_size 0 --rc -output ${GENOME}.HelitronScanner.rc.head
 ## helitron tails
-java -Xmx${MEMGB}g -jar ${HSJAR} scanTail -lcv_filepath ${HSDIR}/TrainingSet/tail.lcvs -g ../$GENOME -buffer_size 0 --rc -output ${GENOME}.HelitronScanner.rc.tail
+java -Xmx${MEMGB}g -jar ${HSJAR} scanTail -lcv_filepath ${HSDIR}/TrainingSet/tail.lcvs -g $GENOMEFA -buffer_size 0 --rc -output ${GENOME}.HelitronScanner.rc.tail
 
 ## pair the ends to generate possible helitrons
 java -Xmx${MEMGB}g -jar ${HSJAR} pairends -head_score ${GENOME}.HelitronScanner.rc.head -tail_score ${GENOME}.HelitronScanner.rc.tail --rc -output ${GENOME}.HelitronScanner.rc.pairends
 
 ## draw the helitrons
-java -Xmx${MEMGB}g -jar ${HSJAR} draw -pscore ${GENOME}.HelitronScanner.rc.pairends -g ../$GENOME -output ${GENOME}.HelitronScanner.draw.rc -pure_helitron
+java -Xmx${MEMGB}g -jar ${HSJAR} draw -pscore ${GENOME}.HelitronScanner.rc.pairends -g $GENOMEFA -output ${GENOME}.HelitronScanner.draw.rc -pure_helitron
  
 
 #########################
@@ -66,13 +66,13 @@ python helitron_scanner_out_to_tabout.py ${GENOME}.HelitronScanner.draw.rc.hel.f
 
 python get_last_30bp_fasta.py ${GENOME}.HelitronScanner.tabnames.fa > ${GENOME}.HelitronScanner.tabnames.terminal30bp.fa
 
-$VSEARCH -allpairs_global ${GENOME}.HelitronScanner.tabnames.terminal30bp.fa -blast6out ${GENOME}.terminal30bp.allvall.out -id 0.8 -query_cov 0.8 -target_cov 0.8 --threads=$CPU --minseqlength 1
+$VSEARCH -allpairs_global ${GENOME}.HelitronScanner.tabnames.terminal30bp.fa -blast6out ${GENOME}.terminal30bp.allvall.out -id 0.8 -query_cov 0.8 -target_cov 0.8 --threads=$CPU
 
 
 ## command for clustering entire helitron length (too computationally expensive
 ##$VSEARCH -allpairs_global ${GENOME}.HelitronScanner.tabnames.fa -blast6out ${GENOME}.allvall.out -id 0.8 -query_cov 0.8 -target_cov 0.8 --threads=$CPU 
 
-$SILIX ${GENOME}.HelitronScanner.tabnames.fa ${GENOME}.terminal30bp.allvall.out -f DHH -i 0.8 -r 0.8 > ${GENOME}.8080.fnodes
+$SILIX ${GENOME}.HelitronScanner.tabnames.terminal30bp.fa ${GENOME}.terminal30bp.allvall.out -f DHH -i 0.8 -r 0.8 > ${GENOME}.8080.fnodes
 
 
 
