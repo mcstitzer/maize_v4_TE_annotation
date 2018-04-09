@@ -8,4 +8,4 @@ To recreate again, I would concatenate all 5' LTRs of all TE copies, and run the
 
 - ```cluster_mtec.sh``` identifies the MTEC consensus that best matches each family.
 
-Download the (Maize TE Consortium Consensuses)[http://maizetedb.org] (here)[http://maizetedb.org/~maize/TE_12-Feb-2015_15-35.fa]
+Download the [Maize TE Consortium Consensuses](http://maizetedb.org) [here](http://maizetedb.org/~maize/TE_12-Feb-2015_15-35.fa)
