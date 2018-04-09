@@ -44,6 +44,9 @@ Software needed:
 
 - [MGEScanNonLTR](http://darwin.informatics.indiana.edu/cgi-bin/evolution/nonltr/nonltr.pl) I use the version generated for Galaxy [here](https://github.com/MGEScan/mgescan).
 
+- [TARGeT](https://academic.oup.com/nar/article/37/11/e78/1094076), [download](https://github.com/BradCavinder/TARGeT), also used for TIRs
+
+
 __TIR including MITEs__
 
 Scripts in ```tir/```
@@ -51,6 +54,8 @@ Scripts in ```tir/```
 Software needed:
 
 - [detectMITE](https://www.nature.com/articles/srep19688), [download](https://sourceforge.net/projects/detectmite/)
+
+- [TARGeT](https://academic.oup.com/nar/article/37/11/e78/1094076), [download](https://github.com/BradCavinder/TARGeT)
 
 - [mTEA](https://github.com/stajichlab/mTEA), genometools (see above, already installed for ltr annotation) 
 
