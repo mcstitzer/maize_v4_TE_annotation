@@ -1,4 +1,4 @@
-I have run detectMITE elsewhere because setting up the matlab dependencies is hard.
+I have run [detectMITE](https://www.nature.com/articles/srep19688) ([download](https://sourceforge.net/projects/detectmite/files/)) elsewhere because setting up the matlab dependencies is hard.
 
 1. ```assign_detectMITE.py``` to put Wicker et al. (2007) superfamily designations on each TE, based on TSD length and TIR sequence (only for distinguishing CACTA and PIF/Harbinger which each have a 3bp TSD). 
 
