@@ -30,7 +30,7 @@ python remove_tsd_sinefinder.py ${GENOME}-matches.fasta ${GENOME}-matches.noTSD.
 $VSEARCH -allpairs_global ${GENOME}-matches.noTSD.fa -blast6out ${GENOME}-matches.noTSD.allvall.8080.out -id 0.8 -query_cov 0.8 -target_cov 0.8 --threads $CPU
 
 # single linkage cluster those that are 80% identical to each other.
-$SILIX ${GENOME}-matches.noTSD.fa -f SINE -i 0.8 -r 0.8 > ${GENOME}-matches.noTSD.8080.fnodes
+$SILIX ${GENOME}-matches.noTSD.fa ${GENOME}-matches.noTSD.allvall.8080.out -f SINE -i 0.8 -r 0.8 > ${GENOME}-matches.noTSD.8080.fnodes
 
 ### cluster my families into MTEC TE families
 wget http://maizetedb.org/~maize/TE_12-Feb-2015_15-35.fa
