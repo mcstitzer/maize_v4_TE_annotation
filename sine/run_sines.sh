@@ -19,7 +19,7 @@ mv Supplemental_Data_Set_1-sine_finder.txt sine_finder.py
 #### I haven't been able to get sine_finder to work with reverse sequences, as it seems to report TSDs wrong on the reverse strand.
 ####   so I'm only reporting on the forward strand.
 ### -f both : outputs csv and fasta
-python sine_finder.py -T chunkwise -V1 -f both -o FR ../${GENOMEFASTA}
+python sine_finder.py -T chunkwise -V1 -f both -o F ../${GENOMEFASTA}
 
 #### sine_finder outputs the fasta with the TSD included. I remove these here, so they aren't considered when clustering into families
 mv ../${GENOME}-matches.fasta .
