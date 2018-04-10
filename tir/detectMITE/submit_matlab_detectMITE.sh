@@ -7,6 +7,9 @@ set -e
 set -u
 
 ### 12 cpu, 36000 memory
+### this expects https://sourceforge.net/projects/detectmite/files/detectMITE.20170425.tar.gz
+### with cd-hit executable inside (detectMITE/cd-hit/cd-hit-est)
+
 
 module load matlab
 #module load matlab matlab/7.11
@@ -21,7 +24,7 @@ export LD_LIBRARY_PATH=~/software/detectMITE/bin/glnxa64/:~/software/detectMITE/
 
 #matlab -nodisplay -nosplash -r "tic;do_MITE_detectionRestart('B73.Mhap2.quiver.fasta','-genome','Mhap2restart','-cpu',12);runtime=toc;quit"
 
-matlab -nodisplay -nosplash -r "tic;do_MITE_detectionRestart('B73V4.both_pseudo_AND_unplaced.fa','-genome','B73V4.both_pseudo_AND_unplaced','-cpu',12);runtime=toc;quit"
+matlab -nodisplay -nosplash -r "tic;do_MITE_detection('B73V4.both_pseudo_AND_unplaced.fa','-genome','B73V4.both_pseudo_AND_unplaced','-cpu',12);runtime=toc;quit"
 
 #matlab -nodisplay -nosplash -r "tic;do_MITE_detectionMCS('B73.Mhap2.quiver.fasta','-genome','Mhap2_10kb','-cpu',12,'-mite_maximum_length',10000);runtime=toc;quit"
 
