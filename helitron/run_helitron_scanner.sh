@@ -75,6 +75,10 @@ $VSEARCH -allpairs_global ${GENOME}.HelitronScanner.tabnames.terminal30bp.fa -bl
 $SILIX ${GENOME}.HelitronScanner.tabnames.terminal30bp.fa ${GENOME}.terminal30bp.allvall.out -f DHH -i 0.8 -r 0.8 > ${GENOME}.8080.fnodes
 
 
+# also cluster with MTEC for naming consistency
+wget http://maizetedb.org/~maize/TE_12-Feb-2015_15-35.fa
+$VSEARCH --usearch_global TE_12-Feb-2015_15-35.fa -db ${GENOME}.HelitronScanner.tabnames.fa -id 0.8 -query_cov 0.8 -target_cov 0.8 -blast6out ${GENOME}.TEDB.8080.searchglobal.toponly.out -strand both -top_hits_only --threads $CPU
+
 
 
 
