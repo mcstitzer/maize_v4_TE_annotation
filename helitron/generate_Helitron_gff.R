@@ -1,10 +1,15 @@
 library(rtracklayer)
 library(stringr)
+library(data.table)
 library(plyr)
 
 
-GENOMENAME=commandArgs(trailingOnly=TRUE)
+GENOMENAME=commandArgs(trailingOnly=TRUE) ## this is what script expects, but hardcoding name is also fine.
 #GENOMENAME='B73V4.both_pseudo_AND_unplaced'
+#GENOMENAME=commandArgs(trailingOnly=TRUE)
+SHORTID='Zm00001d'
+
+
 
 ######### Read in silix results
 a=read.table(paste('families/', GENOMENAME, '.fa.HelitronScanner.draw.bothorientations.tabnames.final30bp.8080.fnodes', sep=''))
@@ -40,7 +45,10 @@ rankedfams=names(rev(sort(table(hel$family))))
 hel$famrank=match(hel$family, rankedfams)
 hel$rankedfamname=sapply(1:nrow(hel), function(x) paste('HEL0', str_pad(hel$famrank[x], 5, pad='0'), sep=''))
 
-
+hel$Name=NA
+for (x in names(table(hel$rankedfamname))){
+  hel$Name[hel$rankedfamname==x & !is.na(hel$rankedfamname)]=paste(x, SHORTID, str_pad(1:sum(hel$rankedfamname[!is.na(hel$rankedfamname)]==x), 5, pad='0'), sep='')
+}
 
 hel.gr=GRanges(seqnames=hel$chr, ranges=IRanges(start=hel$start, end=hel$end), strand=hel$orientation)
 mcols(hel.gr)$ID=hel$ID
@@ -48,6 +56,7 @@ mcols(hel.gr)$score5=hel$score5
 mcols(hel.gr)$score3=hel$score3
 mcols(hel.gr)$rankedfamname=hel$rankedfamname
 mcols(hel.gr)$mtec.fam=hel$mtec.fam
+mcols(hel.gr)$Name=hel$Name
 
 f=merge(hel, a, by.x='ID', by.y='V2', all=T)
 f$fam=table(f$V1)[f$V1]
@@ -55,4 +64,8 @@ mcols(hel.gr)$fam=f$fam
 
 
 ## output gff
+
+hel.gff=data.frame(hel$chr, 'HelitronScanner', 'helitron', hel$start, hel$end, '.', hel$orientation, '.', paste('ID=', hel$Name, sep=''))
+write.table(hel.gff, paste(GENOMENAME, '.DHH.gff3', sep=''), quote=F, sep='\t', row.names=F, col.names=F)
+
 
