@@ -19,7 +19,7 @@ outfile=open(sys.argv[2], 'a')
 ## want to keep track of the first and last couple of bp to get a crude estimate of family
 ## and to predict hairpins in the 3' end
 
-seq=''
+seq='first'
 for line in hsfa:
 	if line.startswith('>'):
 		fields=line.strip().split()
