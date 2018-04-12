@@ -69,4 +69,8 @@ mcols(hel.gr)$fam=f$fam
 hel.gff=data.frame(hel$chr, 'HelitronScanner', 'helitron', hel$start, hel$end, '.', hel$orientation, '.', paste('ID=', hel$Name, sep=''))
 write.table(hel.gff, paste(GENOMENAME, '.DHH.gff3', sep=''), quote=F, sep='\t', row.names=F, col.names=F)
 
+## output tab
+hel.tab=data.frame(TEID=hel$Name, chr=hel$chr, start=hel$start, end=hel$end, strand=hel$orientation, mtec=hel$mtec.fam, LCV5=hel$score5, LCV3=hel$score3)
+write.table(hel.tab, paste0(GENOMENAME, '.DHH.tab'), quote=F, sep='\t', row.names=F, col.names=T)		 
+			 
 
